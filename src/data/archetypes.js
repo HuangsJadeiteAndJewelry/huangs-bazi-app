@@ -1,3 +1,4 @@
+import { ARCHETYPE_DETAILS } from "./archetypeDetails.js";
 export const TEN_GOD_ARCHETYPES = {
   Friend: {
     key: "friend",
@@ -52,17 +53,23 @@ export const TEN_GOD_ARCHETYPES = {
 };
 
 export function mapTenGodScoresToArchetypes(scores) {
-  return Object.entries(scores)
-    .map(([tenGod, score]) => {
-      const archetype = TEN_GOD_ARCHETYPES[tenGod];
+  const entries = Object.entries(scores).map(([tenGod, score]) => {
+    const archetype = TEN_GOD_ARCHETYPES[tenGod];
+    const details = ARCHETYPE_DETAILS[tenGod];
 
-      return {
-        tenGod,
-        score,
-        archetypeKey: archetype.key,
-        publicName: archetype.publicName,
-        theme: archetype.theme,
-      };
-    })
-    .sort((a, b) => b.score - a.score);
+    return {
+      tenGod,
+      score,
+      archetypeKey: archetype.key,
+      publicName: archetype.publicName,
+      theme: archetype.theme,
+      shortMeaning: details.shortMeaning,
+      strengths: details.strengths,
+      blindspots: details.blindspots,
+      communicationStyle: details.communicationStyle,
+      careerTendency: details.careerTendency,
+    };
+  });
+
+  return entries.sort((a, b) => b.score - a.score);
 }

@@ -1,0 +1,34 @@
+export function getCoreEnergyStatus(dayMasterStrength) {
+  const ratio = dayMasterStrength.strengthRatio;
+
+  if (ratio >= 0.58) return "Supported";
+  if (ratio >= 0.45) return "Balanced";
+  if (ratio >= 0.35) return "Weak";
+  return "Challenged";
+}
+
+export function calculateCoreEnergyScore(dayMasterStrength) {
+  return Number((dayMasterStrength.strengthRatio * 10).toFixed(2));
+}
+
+export function buildPersonalEnergyBalance({
+  pillars,
+  dayMasterStrength,
+  usefulGodSuggestion,
+}) {
+  const coreEnergyStatus = getCoreEnergyStatus(dayMasterStrength);
+  const coreEnergyScore = calculateCoreEnergyScore(dayMasterStrength);
+
+  const seasonalDominantElement = pillars.month.branch.element;
+
+  return {
+    coreEnergyStatus,
+    coreEnergyScore,
+    seasonalDominantElement,
+    supportiveElements: usefulGodSuggestion.usefulElements || [],
+    cautionElements: usefulGodSuggestion.avoidElements || [],
+    explanation:
+      "Focusing on supportive elements can help you stay emotionally grounded, reduce internal pressure and create more flow in your daily life.",
+    method: "dayMasterStrengthSeasonalUsefulGodPrototype",
+  };
+}

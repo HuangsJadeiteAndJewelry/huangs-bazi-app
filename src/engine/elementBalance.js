@@ -79,19 +79,23 @@ export function calculateDayMasterStrength(pillars, elementBalance) {
   if (strengthRatio > DAY_MASTER_STRENGTH_THRESHOLDS.strongAbove) category = "Strong";
 
   return {
-    dayMaster: {
-      key: dayMaster.key,
-      zh: dayMaster.zh,
-      label: dayMaster.label,
-      element: dayMaster.element,
-      polarity: dayMaster.polarity,
-    },
-    selfElement,
-    resourceElement,
-    selfScore: Number(selfScore.toFixed(3)),
-    resourceScore: Number(resourceScore.toFixed(3)),
-    totalScore: Number(totalScore.toFixed(3)),
-    strengthRatio: Number(strengthRatio.toFixed(3)),
-    category,
-  };
+  dayMaster: {
+    key: dayMaster.key,
+    zh: dayMaster.zh,
+    label: dayMaster.label,
+    element: dayMaster.element,
+    polarity: dayMaster.polarity,
+    displayName: `${dayMaster.zh} · ${dayMaster.label}`,
+  },
+
+  displayName: `${dayMaster.zh} · ${dayMaster.label}`,
+
+  selfElement,
+  resourceElement,
+  selfScore: Number(selfScore.toFixed(3)),
+  resourceScore: Number(resourceScore.toFixed(3)),
+  totalScore: Number(totalScore.toFixed(3)),
+  strengthRatio: Number(strengthRatio.toFixed(3)),
+  category,
+};
 }

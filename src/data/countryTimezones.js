@@ -1,16 +1,16 @@
 export const COUNTRY_TIMEZONES = {
-  Singapore: "Asia/Singapore",
-  Malaysia: "Asia/Kuala_Lumpur",
-  Thailand: "Asia/Bangkok",
-  Indonesia: "Asia/Jakarta",
-  China: "Asia/Shanghai",
-  Taiwan: "Asia/Taipei",
-  HongKong: "Asia/Hong_Kong",
-  Japan: "Asia/Tokyo",
-  SouthKorea: "Asia/Seoul",
-  Australia: "Australia/Sydney",
-  UnitedKingdom: "Europe/London",
-  UnitedStates: "America/New_York",
+  Singapore: "Singapore",
+  Malaysia: "Malaysia",
+  Thailand: "Thailand",
+  Indonesia: "Indonesia",
+  China: "China",
+  Taiwan: "Taiwan",
+  "Hong Kong": "Hong Kong",
+  Japan: "Japan",
+  "South Korea": "South Korea",
+  Australia: "Australia",
+  "United Kingdom": "Europe",
+  "United States": "America",
 };
 
 export function getTimezoneFromBirthCountry(birthCountry) {

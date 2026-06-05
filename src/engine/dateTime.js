@@ -85,18 +85,20 @@ export function normalizeInput(input) {
   const parsedDate = parseBirthDate(input.birthDate);
   const parsedTime = parseBirthTime(input.birthTime);
   const timezone = getTimezoneFromBirthCountry(input.birthCountry);
-  const useBirthTime = Boolean(input.useBirthTime && parsedTime);
+  const useBirthTime = Boolean(parsedTime);
 
   return {
-    birthDate: input.birthDate,
-    birthTime: input.birthTime || null,
-    birthCountry: input.birthCountry,
-    timezone,
-    useBirthTime,
-    year: parsedDate.year,
-    month: parsedDate.month,
-    day: parsedDate.day,
-    hour: parsedTime ? parsedTime.hour : null,
-    minute: parsedTime ? parsedTime.minute : null,
-  };
+  name: input.name?.trim() || "",
+  gender: input.gender || "",
+  birthDate: input.birthDate,
+  birthTime: input.birthTime || null,
+  birthCountry: input.birthCountry,
+  timezone,
+  useBirthTime,
+  year: parsedDate.year,
+  month: parsedDate.month,
+  day: parsedDate.day,
+  hour: parsedTime ? parsedTime.hour : null,
+  minute: parsedTime ? parsedTime.minute : null,
+};
 }
