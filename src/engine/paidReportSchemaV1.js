@@ -116,6 +116,7 @@ export function buildPaidReportSchemaV1(chart) {
 
     annualEnergy: {
       annualOverlay: chart?.annualOverlayV3 || chart?.annualOverlay || null,
+      monthlyOverlay: chart?.monthlyOverlayV1 || null,
       selectedYear: chart?.input?.selectedYear || 2026,
     },
 

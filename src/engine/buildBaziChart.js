@@ -12,6 +12,7 @@ import { buildStoneRecommendationsV4 } from "./stoneRecommendationsV4.js";
 import { buildProductRecommendationsV1 } from "./productRecommendationsV1.js";
 import { buildAnnualOverlayV3 } from "./annualOverlayV3.js";
 import { annualOverlayV4 } from "./annualOverlayV4.js";
+import { buildMonthlyOverlayV1 } from "./monthlyOverlayV1.js";
 import { buildRelationshipEngineV2 } from "./relationshipEngineV2.js";
 import { buildGenderInfluenceV1 } from "./genderInfluenceV1.js";
 import { buildCareerEngineV1 } from "./careerEngineV1.js";
@@ -215,6 +216,19 @@ export function buildBaziChart(input) {
   } catch (error) {
     console.warn("AnnualOverlayV4 failed safely:", error);
     annualOverlayV4Error = error.message;
+  }
+
+  let monthlyOverlayV1Result = null;
+  let monthlyOverlayV1Error = null;
+
+  try {
+    monthlyOverlayV1Result = buildMonthlyOverlayV1({
+      selectedYear,
+      usefulGodV4: usefulGodV4Result,
+    });
+  } catch (error) {
+    console.warn("MonthlyOverlayV1 failed safely:", error);
+    monthlyOverlayV1Error = error.message;
   }
 
   const consumerEngineInput = buildConsumerEngineInput({
@@ -620,6 +634,7 @@ export function buildBaziChart(input) {
       annualOverlay,
       annualOverlayV3,
       annualOverlayV4: annualOverlayV4Result,
+      monthlyOverlayV1: monthlyOverlayV1Result,
 
       archetypes,
       adjustedArchetypes,
@@ -686,6 +701,10 @@ export function buildBaziChart(input) {
 
   if (annualOverlayV4Error) {
     warnings.push(`AnnualOverlayV4 failed safely: ${annualOverlayV4Error}`);
+  }
+
+  if (monthlyOverlayV1Error) {
+    warnings.push(`MonthlyOverlayV1 failed safely: ${monthlyOverlayV1Error}`);
   }
 
   if (relationshipArchetypeV1Error) {
@@ -851,6 +870,7 @@ export function buildBaziChart(input) {
     annualOverlay,
     annualOverlayV3,
     annualOverlayV4: annualOverlayV4Result,
+    monthlyOverlayV1: monthlyOverlayV1Result,
     archetypeOverlayV3,
 
     elementBalance,

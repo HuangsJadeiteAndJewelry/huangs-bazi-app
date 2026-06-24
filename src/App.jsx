@@ -1920,6 +1920,7 @@ function AdminFullReport({ report, clientName }) {
   const lifeThemes = lifeAreas.lifeThemes || {};
   const growthAdvice = lifeAreas.growthAdvice || {};
   const elementalBalance = report.chartFoundation?.elementalBalance || [];
+  const monthlyOutlook = report.annualEnergy?.monthlyOverlay?.months || [];
   const strongerElements = elementalBalance.slice(0, 2).map((e) => e.name);
   const weakerElements = [...elementalBalance].slice(-2).map((e) => e.name);
 
@@ -2052,6 +2053,63 @@ function AdminFullReport({ report, clientName }) {
                 </div>
               );
             })}
+          </div>
+        </div>
+      )}
+
+      {!!monthlyOutlook.length && (
+        <div className="mt-8">
+          <h3 className="text-xl font-bold text-slate-950">
+            🗓️ Monthly Outlook — {report.annualEnergy?.selectedYear || ""}
+          </h3>
+          <p className="mt-2 text-sm text-stone-500">
+            Each month's dominant element read against this chart's favourable
+            and caution elements.
+          </p>
+          <div className="mt-4 overflow-hidden rounded-2xl border border-slate-200">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-slate-50 text-left text-xs font-bold uppercase tracking-[0.12em] text-slate-600">
+                  <th className="px-4 py-2.5">Month</th>
+                  <th className="px-4 py-2.5">Pillar</th>
+                  <th className="px-4 py-2.5">Dominant</th>
+                  <th className="px-4 py-2.5">Read</th>
+                  <th className="px-4 py-2.5">Note</th>
+                </tr>
+              </thead>
+              <tbody>
+                {monthlyOutlook.map((item) => (
+                  <tr
+                    key={item.month}
+                    className="border-t border-slate-100 align-top"
+                  >
+                    <td className="px-4 py-2.5 font-semibold text-slate-800">
+                      {item.monthName}
+                    </td>
+                    <td className="px-4 py-2.5 text-stone-600">
+                      {item.chinese} ({item.branchAnimal})
+                    </td>
+                    <td className="px-4 py-2.5 text-stone-600">
+                      {item.dominantElement}
+                    </td>
+                    <td className="px-4 py-2.5">
+                      <span
+                        className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${
+                          item.read === "Good"
+                            ? "bg-green-50 text-green-700"
+                            : item.read === "Caution"
+                            ? "bg-red-50 text-red-700"
+                            : "bg-slate-100 text-slate-600"
+                        }`}
+                      >
+                        {item.read}
+                      </span>
+                    </td>
+                    <td className="px-4 py-2.5 text-stone-600">{item.note}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       )}
