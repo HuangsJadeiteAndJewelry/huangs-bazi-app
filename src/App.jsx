@@ -340,6 +340,12 @@ const PROFILE_DISPLAY = {
   },
 };
 
+function getProfileDisplay(profileName) {
+  const stripped = String(profileName || "").replace(/\s+/g, "");
+  const camelKey = stripped.charAt(0).toLowerCase() + stripped.slice(1);
+  return PROFILE_DISPLAY[camelKey] || PROFILE_DISPLAY[stripped] || {};
+}
+
 function normalizeScore(value) {
   const raw = Number(value || 0);
 
@@ -1807,26 +1813,6 @@ function getFirstParagraph(text) {
     .join("\n\n");
 }
 
-function ExecutiveSummarySection({ report }) {
-  if (!report?.executiveSummary) return null;
-
-  return (
-    <section className="rounded-[36px] border border-orange-200 bg-gradient-to-br from-white via-[#FFFDF8] to-orange-50 px-8 py-10 shadow-lg md:px-10">
-      <p className="inline-flex rounded-full bg-orange-100 px-4 py-2 text-xs font-bold uppercase tracking-[0.28em] text-orange-700">
-        Personal Overview
-      </p>
-
-      <h2 className="mt-5 text-3xl font-bold tracking-tight text-slate-950 md:text-4xl">
-        Your Energy Story
-      </h2>
-
-      <p className="mt-5 max-w-5xl whitespace-pre-line text-lg leading-8 text-stone-600">
-        {report.executiveSummary}
-      </p>
-    </section>
-  );
-}
-
 function FinalReflectionSection() {
   return (
     <section className="rounded-[36px] border border-slate-200 bg-white px-8 py-10 shadow-md md:px-10">
@@ -2026,14 +2012,30 @@ function AdminFullReport({ report, clientName }) {
           <p className="mt-3 text-sm text-stone-500">
             Full ten-god profile ranking, strongest to most dormant.
           </p>
-          <AdminBulletList
-            items={rankedProfiles}
-            render={(item) => (
-              <>
-                <strong>{item.profile}</strong> — {item.percentage}%
-              </>
-            )}
-          />
+          <div className="mt-4 space-y-3">
+            {rankedProfiles.map((item) => {
+              const display = getProfileDisplay(item.profile);
+              return (
+                <div
+                  key={item.profile}
+                  className="rounded-xl border border-slate-200 p-4"
+                >
+                  <p className="text-base font-bold text-slate-950">
+                    {display.icon} {item.percentage}% {item.profile}
+                    {display.name ? ` — ${display.name}` : ""}
+                  </p>
+                  {display.subtitle && (
+                    <p className="mt-0.5 text-xs font-semibold uppercase tracking-[0.18em] text-amber-700">
+                      {display.subtitle}
+                    </p>
+                  )}
+                  {display.theme && (
+                    <p className="mt-1.5 text-sm text-stone-600">{display.theme}</p>
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </div>
       )}
 
@@ -3224,8 +3226,6 @@ export default function HuangsBaZiUIFrontend() {
             )}
 
                                                                      <EmotionalEnergyProfile profile={uiChart.profile} />
-
-            <ExecutiveSummarySection report={previewReport} />
 
             <TopStrengthsSection strengths={topStrengths} />
 
