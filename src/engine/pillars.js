@@ -63,37 +63,47 @@ export function calculateYearPillar(normalizedInput) {
   });
 }
 
+// Five Tigers (五虎遁) rule: given a year stem, which month stem starts the
+// Yin (Tiger) month - every other month stem follows by stepping forward
+// from there. Shared by month-pillar calculation and Life Palace's stem
+// derivation (the same rule applied to a different target branch).
+const TIGER_STEM_START_BY_YEAR_STEM_INDEX = {
+  0: 2,
+  5: 2,
+  1: 4,
+  6: 4,
+  2: 6,
+  7: 6,
+  3: 8,
+  8: 8,
+  4: 0,
+  9: 0,
+};
+
+export function getFiveTigersStem(yearStemKey, targetBranchKey) {
+  const yearStemIndex = getStemIndex(yearStemKey);
+  const targetBranchIndex = getBranchIndex(targetBranchKey);
+  const tigerBranchIndex = getBranchIndex("yin");
+
+  const monthsFromTiger = cycleMod(targetBranchIndex - tigerBranchIndex, 12);
+  const stemIndex = cycleMod(
+    TIGER_STEM_START_BY_YEAR_STEM_INDEX[yearStemIndex] + monthsFromTiger,
+    10
+  );
+
+  return HEAVENLY_STEMS[stemIndex].key;
+}
+
 export function calculateMonthPillar(normalizedInput, yearPillar) {
   const monthBranchKey = getSolarMonthBranchApprox(
     normalizedInput.month,
     normalizedInput.day
   );
 
-  const monthBranchIndex = getBranchIndex(monthBranchKey);
-  const yearStemIndex = getStemIndex(yearPillar.stem.key);
-
-  const tigerStemStartByYearStemIndex = {
-    0: 2,
-    5: 2,
-    1: 4,
-    6: 4,
-    2: 6,
-    7: 6,
-    3: 8,
-    8: 8,
-    4: 0,
-    9: 0,
-  };
-
-  const tigerBranchIndex = getBranchIndex("yin");
-  const monthsFromTiger = cycleMod(monthBranchIndex - tigerBranchIndex, 12);
-  const monthStemIndex = cycleMod(
-    tigerStemStartByYearStemIndex[yearStemIndex] + monthsFromTiger,
-    10
-  );
+  const monthStemKey = getFiveTigersStem(yearPillar.stem.key, monthBranchKey);
 
   return buildPillar({
-    stemKey: HEAVENLY_STEMS[monthStemIndex].key,
+    stemKey: monthStemKey,
     branchKey: monthBranchKey,
   });
 }

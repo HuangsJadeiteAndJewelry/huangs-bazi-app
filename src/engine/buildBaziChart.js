@@ -15,6 +15,8 @@ import { annualOverlayV4 } from "./annualOverlayV4.js";
 import { buildMonthlyOverlayV1 } from "./monthlyOverlayV1.js";
 import { buildEightMansionsV1 } from "./eightMansionsV1.js";
 import { buildShenShaV1 } from "./shenShaV1.js";
+import { buildLuckPillarsV1 } from "./luckPillarsV1.js";
+import { buildLifePalaceV1, buildConceptionPalaceV1 } from "./lifePalaceV1.js";
 import { buildRelationshipEngineV2 } from "./relationshipEngineV2.js";
 import { buildGenderInfluenceV1 } from "./genderInfluenceV1.js";
 import { buildCareerEngineV1 } from "./careerEngineV1.js";
@@ -254,6 +256,36 @@ export function buildBaziChart(input) {
   } catch (error) {
     console.warn("ShenShaV1 failed safely:", error);
     shenShaV1Error = error.message;
+  }
+
+  let luckPillarsV1Result = null;
+  let luckPillarsV1Error = null;
+
+  try {
+    luckPillarsV1Result = buildLuckPillarsV1({ pillars, normalizedInput });
+  } catch (error) {
+    console.warn("LuckPillarsV1 failed safely:", error);
+    luckPillarsV1Error = error.message;
+  }
+
+  let lifePalaceV1Result = null;
+  let lifePalaceV1Error = null;
+
+  try {
+    lifePalaceV1Result = buildLifePalaceV1({ pillars });
+  } catch (error) {
+    console.warn("LifePalaceV1 failed safely:", error);
+    lifePalaceV1Error = error.message;
+  }
+
+  let conceptionPalaceV1Result = null;
+  let conceptionPalaceV1Error = null;
+
+  try {
+    conceptionPalaceV1Result = buildConceptionPalaceV1({ pillars });
+  } catch (error) {
+    console.warn("ConceptionPalaceV1 failed safely:", error);
+    conceptionPalaceV1Error = error.message;
   }
 
   const consumerEngineInput = buildConsumerEngineInput({
@@ -662,6 +694,9 @@ export function buildBaziChart(input) {
       monthlyOverlayV1: monthlyOverlayV1Result,
       eightMansionsV1: eightMansionsV1Result,
       shenShaV1: shenShaV1Result,
+      luckPillarsV1: luckPillarsV1Result,
+      lifePalaceV1: lifePalaceV1Result,
+      conceptionPalaceV1: conceptionPalaceV1Result,
 
       archetypes,
       adjustedArchetypes,
@@ -740,6 +775,18 @@ export function buildBaziChart(input) {
 
   if (shenShaV1Error) {
     warnings.push(`ShenShaV1 failed safely: ${shenShaV1Error}`);
+  }
+
+  if (luckPillarsV1Error) {
+    warnings.push(`LuckPillarsV1 failed safely: ${luckPillarsV1Error}`);
+  }
+
+  if (lifePalaceV1Error) {
+    warnings.push(`LifePalaceV1 failed safely: ${lifePalaceV1Error}`);
+  }
+
+  if (conceptionPalaceV1Error) {
+    warnings.push(`ConceptionPalaceV1 failed safely: ${conceptionPalaceV1Error}`);
   }
 
   if (relationshipArchetypeV1Error) {
@@ -908,6 +955,9 @@ export function buildBaziChart(input) {
     monthlyOverlayV1: monthlyOverlayV1Result,
     eightMansionsV1: eightMansionsV1Result,
     shenShaV1: shenShaV1Result,
+    luckPillarsV1: luckPillarsV1Result,
+    lifePalaceV1: lifePalaceV1Result,
+    conceptionPalaceV1: conceptionPalaceV1Result,
     archetypeOverlayV3,
 
     elementBalance,

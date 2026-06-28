@@ -1922,6 +1922,9 @@ function AdminFullReport({ report, clientName }) {
   const stones = report.practicalSupport?.stones || {};
   const eightMansions = report.personalDirectionsAndStars?.eightMansions || null;
   const shenSha = report.personalDirectionsAndStars?.shenSha?.stars || [];
+  const luckPillars = report.personalDirectionsAndStars?.luckPillars || null;
+  const lifePalace = report.personalDirectionsAndStars?.lifePalace || null;
+  const conceptionPalace = report.personalDirectionsAndStars?.conceptionPalace || null;
 
   const rankedProfiles = [...(personality.tenProfileScoring?.rankedProfiles || [])].sort(
     (a, b) => b.percentage - a.percentage
@@ -2528,26 +2531,94 @@ function AdminFullReport({ report, clientName }) {
         </AdminReportSection>
       )}
 
+      {(lifePalace || conceptionPalace) && (
+        <AdminReportSection icon="🔮" title="Life Palace & Conception Palace">
+          <div className="mt-3 grid gap-5 md:grid-cols-2 text-base text-stone-700">
+            {lifePalace && (
+              <p>
+                <strong>Life Palace (命宮):</strong>{" "}
+                {lifePalace.pillar.stem.zh}
+                {lifePalace.pillar.branch.zh} ({lifePalace.pillar.stem.element}{" "}
+                {lifePalace.pillar.branch.animal})
+              </p>
+            )}
+            {conceptionPalace && (
+              <p>
+                <strong>Conception Palace (胎元):</strong>{" "}
+                {conceptionPalace.pillar.stem.zh}
+                {conceptionPalace.pillar.branch.zh} ({conceptionPalace.pillar.stem.element}{" "}
+                {conceptionPalace.pillar.branch.animal})
+              </p>
+            )}
+          </div>
+        </AdminReportSection>
+      )}
+
       {!!shenSha.length && (
         <AdminReportSection icon="🌸" title="Personal Stars (Shen Sha)">
           <AdminBulletList
             items={shenSha}
             render={(item) => {
-              const branches = item.branches
+              const target = item.branches
                 ? item.branches.map((b) => `${b.zh} ${b.animal}`).join(" / ")
-                : `${item.branch.zh} ${item.branch.animal}`;
+                : item.branch
+                ? `${item.branch.zh} ${item.branch.animal}`
+                : item.stem
+                ? `${item.stem.zh} ${item.stem.name}`
+                : "";
               return (
                 <>
                   <strong>
                     {item.name} ({item.zh})
                   </strong>{" "}
-                  — {branches}
-                  {item.active ? " · active in this chart" : ""}. {item.theme}
+                  — {target}
+                  {item.active ? " · active in this chart" : ""}.{" "}
+                  {item.theme}
                   {item.caution ? ` ${item.caution}` : ""}
                 </>
               );
             }}
           />
+        </AdminReportSection>
+      )}
+
+      {!!luckPillars?.pillars?.length && (
+        <AdminReportSection icon="📈" title="Luck Pillars (大運)">
+          <p className="mt-2 text-sm text-stone-500">
+            10-year cycles from age {luckPillars.startingAge.years}y
+            {luckPillars.startingAge.months}m, stepping{" "}
+            {luckPillars.direction === "forward" ? "forward" : "in reverse"}{" "}
+            through the cycle from the month pillar.
+          </p>
+          <div className="mt-4 overflow-hidden rounded-2xl border border-slate-200">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-slate-50 text-left text-xs font-bold uppercase tracking-[0.12em] text-slate-600">
+                  <th className="px-4 py-2.5">Age</th>
+                  <th className="px-4 py-2.5">Pillar</th>
+                  <th className="px-4 py-2.5">Element</th>
+                  <th className="px-4 py-2.5">Ten God</th>
+                </tr>
+              </thead>
+              <tbody>
+                {luckPillars.pillars.map((p, i) => (
+                  <tr key={i} className="border-t border-slate-100 align-top">
+                    <td className="px-4 py-2.5 font-semibold text-slate-800">
+                      {p.startAge.years}y{p.startAge.months}m–{p.endAge.years}y
+                      {p.endAge.months}m
+                    </td>
+                    <td className="px-4 py-2.5">
+                      {p.pillar.stem.zh}
+                      {p.pillar.branch.zh} ({p.pillar.stem.name}{" "}
+                      {p.pillar.branch.animal})
+                    </td>
+                    <td className="px-4 py-2.5">{p.pillar.stem.element}</td>
+                    <td className="px-4 py-2.5">{p.tenGod}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </AdminReportSection>
       )}
 

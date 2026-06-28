@@ -6,6 +6,7 @@
 export const PILLAR_VALIDATION_DATASET = [
   {
   name: "Joshua",
+  gender: "male",
   birthDate: "1999-01-26",
   birthTime: "22:00",
 
@@ -19,6 +20,7 @@ export const PILLAR_VALIDATION_DATASET = [
 
   {
     name: "Ma Weini",
+    gender: "female",
     birthDate: "1982-08-15",
     birthTime: "21:00",
 
@@ -29,6 +31,7 @@ export const PILLAR_VALIDATION_DATASET = [
 
   {
     name: "Suyin C",
+    gender: "female",
     birthDate: "1987-12-03",
     birthTime: "03:45",
 
@@ -39,6 +42,7 @@ export const PILLAR_VALIDATION_DATASET = [
 
   {
     name: "Yue Qing Amanda",
+    gender: "female",
     birthDate: "1986-09-07",
     birthTime: "00:00",
 
@@ -49,6 +53,7 @@ export const PILLAR_VALIDATION_DATASET = [
 
   {
     name: "Wong Lee Lee",
+    gender: "female",
     birthDate: "1980-03-06",
     birthTime: null,
 

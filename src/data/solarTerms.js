@@ -28,6 +28,59 @@ export const SEASONAL_ELEMENT_WEIGHT = {
   chou: { Wood: 0.8, Fire: 0.7, Earth: 1.3, Metal: 0.9, Water: 1.1 },
 };
 
+import { SOLAR_TERM_TIMESTAMPS_BY_YEAR } from "./solarTermTimestamps.js";
+
+// Real per-year Jie-term timestamps (see solarTermTimestamps.js / generator
+// at scripts/generateSolarTerms.mjs), used for Luck Pillar starting-age
+// precision - unlike getSolarMonthBranchApprox above, this needs the true
+// astronomical instant, not a fixed calendar-date approximation, since a
+// 1-2 day error here becomes a ~4-8 month error in starting age (3 days =
+// 1 year). Treated as naive local civil time, same simplification the rest
+// of this engine already uses for birth date/time (see module comment in
+// generateSolarTerms.mjs for why Beijing time is the reference here).
+function timestampToComparable(t) {
+  return Date.UTC(t.year, t.month - 1, t.day, t.hour, t.minute);
+}
+
+function getJieTermsAround(year) {
+  return [year - 1, year, year + 1].flatMap(
+    (y) => SOLAR_TERM_TIMESTAMPS_BY_YEAR[y] || []
+  );
+}
+
+// Finds the nearest Jie term to the given birth moment, in the requested
+// direction ("forward" = next upcoming term, "backward" = most recent past
+// term), and returns the day-distance (fractional) plus the term itself.
+export function getNearestJieTerm(year, month, day, hour, minute, direction) {
+  const birthValue = Date.UTC(year, month - 1, day, hour ?? 0, minute ?? 0);
+  const candidates = getJieTermsAround(year);
+
+  let nearest = null;
+  let nearestValue = null;
+
+  for (const term of candidates) {
+    const value = timestampToComparable(term.timestamp);
+
+    if (direction === "forward") {
+      if (value > birthValue && (nearestValue === null || value < nearestValue)) {
+        nearest = term;
+        nearestValue = value;
+      }
+    } else {
+      if (value <= birthValue && (nearestValue === null || value > nearestValue)) {
+        nearest = term;
+        nearestValue = value;
+      }
+    }
+  }
+
+  if (!nearest) return null;
+
+  const dayDistance = Math.abs(nearestValue - birthValue) / 86400000;
+
+  return { term: nearest, dayDistance };
+}
+
 export function getSolarYearApprox(year, month, day) {
   const beforeLiChun = month < 2 || (month === 2 && day < 4);
   return beforeLiChun ? year - 1 : year;

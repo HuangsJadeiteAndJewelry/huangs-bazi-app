@@ -1,18 +1,38 @@
-import { getBranch } from "../data/baziConstants.js";
+import { getBranch, getStem } from "../data/baziConstants.js";
 
-// Shen Sha (神煞) auxiliary stars. Starting with three that were validated
-// against real reference output (Ma Weini's chart: Peach Blossom = Mao/
-// Rabbit, Sky Horse = Shen/Monkey, Noble People = Wei/Goat, all matching).
-// Other commonly-requested stars (Intelligence, Solitary, etc.) need their
-// own lookup tables verified the same way before being added - deliberately
-// left out of this first pass rather than guessing.
+// Shen Sha (神煞) auxiliary stars. Started with three validated against real
+// reference output (Ma Weini's chart: Peach Blossom = Mao/Rabbit, Sky Horse
+// = Shen/Monkey, Noble People = Wei/Goat, all matching). This round adds
+// Intelligence Star, Solitary/Widow, Monthly Virtue, Heavenly Virtue, Five
+// Ghosts and Robbery Sha, each sourced and cross-checked against multiple
+// classical references before being added - see project memory for sources.
+//
+// White Tiger (白虎) is deliberately left out: sources disagree on what it
+// even is - some equate it with 災煞 (a natal year-branch-trio lookup, same
+// shape as everything else here), others treat it as an annual flying star
+// relative to Tai Sui (a yearly-recalculated transit, structurally
+// different from every other star in this file). Add only once it's clear
+// which definition the reference tool being validated against actually uses.
 
-// Year-branch trio groups, used by both Peach Blossom and Sky Horse.
+// Standard "trine" groups (4 branches apart, 120° on the zodiac wheel).
+// Used by Peach Blossom and Sky Horse (year-branch-keyed) and Monthly
+// Virtue (month-branch-keyed) - the grouping shape is identical, only
+// which pillar's branch you look up against it differs.
 const TRIO_GROUPS = [
-  { branches: ["yin", "wu", "xu"], peachBlossom: "mao", skyHorse: "shen" },
-  { branches: ["shen", "zi", "chen"], peachBlossom: "you", skyHorse: "yin" },
-  { branches: ["hai", "mao", "wei"], peachBlossom: "zi", skyHorse: "si" },
-  { branches: ["si", "you", "chou"], peachBlossom: "wu", skyHorse: "hai" },
+  { branches: ["yin", "wu", "xu"], peachBlossom: "mao", skyHorse: "shen", robberySha: "hai", monthlyVirtue: "bing" },
+  { branches: ["shen", "zi", "chen"], peachBlossom: "you", skyHorse: "yin", robberySha: "si", monthlyVirtue: "ren" },
+  { branches: ["hai", "mao", "wei"], peachBlossom: "zi", skyHorse: "si", robberySha: "shen", monthlyVirtue: "jia" },
+  { branches: ["si", "you", "chou"], peachBlossom: "wu", skyHorse: "hai", robberySha: "yin", monthlyVirtue: "geng" },
+];
+
+// Seasonal-quarter groups (3 CONSECUTIVE branches each season) - a
+// different grouping shape from the trine groups above. Used by
+// Solitary/Widow only.
+const SEASON_TRIO_GROUPS = [
+  { branches: ["hai", "zi", "chou"], solitary: "yin", widow: "xu" },
+  { branches: ["yin", "mao", "chen"], solitary: "si", widow: "chou" },
+  { branches: ["si", "wu", "wei"], solitary: "shen", widow: "chen" },
+  { branches: ["shen", "you", "xu"], solitary: "hai", widow: "wei" },
 ];
 
 // Day Stem -> Noble People (Tian Yi Guiren) branches.
@@ -29,8 +49,63 @@ const NOBLE_PEOPLE_BY_DAY_STEM = {
   xin: ["yin", "wu"],
 };
 
+// Day Stem -> Intelligence Star (Wen Chang Gui Ren) branch.
+const INTELLIGENCE_STAR_BY_DAY_STEM = {
+  jia: "si",
+  yi: "wu",
+  bing: "shen",
+  ding: "you",
+  wu: "shen",
+  ji: "you",
+  geng: "hai",
+  xin: "zi",
+  ren: "yin",
+  gui: "mao",
+};
+
+// Year Branch -> Five Ghosts (五鬼) branch, a fixed +4 offset around the
+// 12 branches.
+const FIVE_GHOSTS_BY_YEAR_BRANCH = {
+  zi: "chen",
+  chou: "si",
+  yin: "wu",
+  mao: "wei",
+  chen: "shen",
+  si: "you",
+  wu: "xu",
+  wei: "hai",
+  shen: "zi",
+  you: "chou",
+  xu: "yin",
+  hai: "mao",
+};
+
+// Month Branch -> Heavenly Virtue (Tian De Gui Ren) target. The classical
+// table mixes stems and branches depending on the month - some months'
+// Heavenly Virtue is conventionally a branch rather than a stem, checked
+// against either the stems or branches present in the chart. Do not force
+// every entry into a single stem table.
+const HEAVENLY_VIRTUE_BY_MONTH_BRANCH = {
+  yin: { type: "stem", key: "ding" },
+  mao: { type: "branch", key: "shen" },
+  chen: { type: "stem", key: "ren" },
+  si: { type: "stem", key: "xin" },
+  wu: { type: "branch", key: "hai" },
+  wei: { type: "stem", key: "jia" },
+  shen: { type: "stem", key: "gui" },
+  you: { type: "branch", key: "yin" },
+  xu: { type: "stem", key: "bing" },
+  hai: { type: "stem", key: "yi" },
+  zi: { type: "branch", key: "si" },
+  chou: { type: "stem", key: "geng" },
+};
+
 function findTrioGroup(branchKey) {
   return TRIO_GROUPS.find((group) => group.branches.includes(branchKey));
+}
+
+function findSeasonTrioGroup(branchKey) {
+  return SEASON_TRIO_GROUPS.find((group) => group.branches.includes(branchKey));
 }
 
 function branchPresentInPillars(pillars, branchKey) {
@@ -39,21 +114,46 @@ function branchPresentInPillars(pillars, branchKey) {
     .some((pillar) => pillar.branch.key === branchKey);
 }
 
+function stemPresentInPillars(pillars, stemKey) {
+  return Object.values(pillars)
+    .filter(Boolean)
+    .some((pillar) => pillar.stem.key === stemKey);
+}
+
 export function buildShenShaV1({ pillars }) {
   if (!pillars?.year || !pillars?.day) return null;
 
   const yearBranchKey = pillars.year.branch.key;
   const dayStemKey = pillars.day.stem.key;
+  const monthBranchKey = pillars.month?.branch?.key || null;
 
-  const trioGroup = findTrioGroup(yearBranchKey);
-  const peachBlossomBranchKey = trioGroup?.peachBlossom || null;
-  const skyHorseBranchKey = trioGroup?.skyHorse || null;
+  const yearTrioGroup = findTrioGroup(yearBranchKey);
+  const yearSeasonGroup = findSeasonTrioGroup(yearBranchKey);
+  const monthTrioGroup = monthBranchKey ? findTrioGroup(monthBranchKey) : null;
+
+  const peachBlossomBranchKey = yearTrioGroup?.peachBlossom || null;
+  const skyHorseBranchKey = yearTrioGroup?.skyHorse || null;
+  const robberyShaBranchKey = yearTrioGroup?.robberySha || null;
+  const solitaryBranchKey = yearSeasonGroup?.solitary || null;
+  const widowBranchKey = yearSeasonGroup?.widow || null;
   const nobleBranchKeys = NOBLE_PEOPLE_BY_DAY_STEM[dayStemKey] || [];
+  const intelligenceBranchKey = INTELLIGENCE_STAR_BY_DAY_STEM[dayStemKey] || null;
+  const fiveGhostsBranchKey = FIVE_GHOSTS_BY_YEAR_BRANCH[yearBranchKey] || null;
+  const monthlyVirtueStemKey = monthTrioGroup?.monthlyVirtue || null;
+  const heavenlyVirtue = monthBranchKey
+    ? HEAVENLY_VIRTUE_BY_MONTH_BRANCH[monthBranchKey] || null
+    : null;
 
   const branchLabel = (key) => {
     if (!key) return null;
     const branch = getBranch(key);
     return { key, zh: branch.zh, animal: branch.animal };
+  };
+
+  const stemLabel = (key) => {
+    if (!key) return null;
+    const stem = getStem(key);
+    return { key, zh: stem.zh, name: stem.name };
   };
 
   const stars = [];
@@ -63,7 +163,7 @@ export function buildShenShaV1({ pillars }) {
       key: "peachBlossom",
       name: "Peach Blossom",
       zh: "桃花",
-      branch: branchLabel(peachBlossomBranchKey) || { key: peachBlossomBranchKey },
+      branch: branchLabel(peachBlossomBranchKey),
       theme: "Charm, attractiveness, romantic and social opportunities.",
       caution: "Can also bring romantic complications or scattered attention.",
       active: branchPresentInPillars(pillars, peachBlossomBranchKey),
@@ -75,7 +175,7 @@ export function buildShenShaV1({ pillars }) {
       key: "skyHorse",
       name: "Sky Horse",
       zh: "驛馬",
-      branch: branchLabel(skyHorseBranchKey) || { key: skyHorseBranchKey },
+      branch: branchLabel(skyHorseBranchKey),
       theme: "Travel, movement, relocation, change of environment.",
       caution: "Can also show as restlessness or difficulty settling.",
       active: branchPresentInPillars(pillars, skyHorseBranchKey),
@@ -87,10 +187,102 @@ export function buildShenShaV1({ pillars }) {
       key: "noblePeople",
       name: "Noble People",
       zh: "天乙貴人",
-      branches: nobleBranchKeys.map((key) => branchLabel(key) || { key }),
+      branches: nobleBranchKeys.map((key) => branchLabel(key)),
       theme: "Helpful mentors or benefactors who appear at key moments.",
       caution: null,
       active: nobleBranchKeys.some((key) => branchPresentInPillars(pillars, key)),
+    });
+  }
+
+  if (intelligenceBranchKey) {
+    stars.push({
+      key: "intelligenceStar",
+      name: "Intelligence Star",
+      zh: "文昌貴人",
+      branch: branchLabel(intelligenceBranchKey),
+      theme: "Learning, study, exam performance, intellectual recognition.",
+      caution: null,
+      active: branchPresentInPillars(pillars, intelligenceBranchKey),
+    });
+  }
+
+  if (solitaryBranchKey) {
+    stars.push({
+      key: "solitary",
+      name: "Solitary",
+      zh: "孤辰",
+      branch: branchLabel(solitaryBranchKey),
+      theme: null,
+      caution: "Can show as a tendency toward independence or emotional distance, particularly around partnership.",
+      active: branchPresentInPillars(pillars, solitaryBranchKey),
+    });
+  }
+
+  if (widowBranchKey) {
+    stars.push({
+      key: "widow",
+      name: "Widow Star",
+      zh: "寡宿",
+      branch: branchLabel(widowBranchKey),
+      theme: null,
+      caution: "Can show as a tendency toward independence or emotional distance, particularly around partnership.",
+      active: branchPresentInPillars(pillars, widowBranchKey),
+    });
+  }
+
+  if (monthlyVirtueStemKey) {
+    stars.push({
+      key: "monthlyVirtue",
+      name: "Monthly Virtue",
+      zh: "月德貴人",
+      stem: stemLabel(monthlyVirtueStemKey),
+      theme: "Protection, goodwill, smoother resolution of difficulties.",
+      caution: null,
+      active: stemPresentInPillars(pillars, monthlyVirtueStemKey),
+    });
+  }
+
+  if (heavenlyVirtue) {
+    const active =
+      heavenlyVirtue.type === "stem"
+        ? stemPresentInPillars(pillars, heavenlyVirtue.key)
+        : branchPresentInPillars(pillars, heavenlyVirtue.key);
+
+    stars.push({
+      key: "heavenlyVirtue",
+      name: "Heavenly Virtue",
+      zh: "天德貴人",
+      [heavenlyVirtue.type]:
+        heavenlyVirtue.type === "stem"
+          ? stemLabel(heavenlyVirtue.key)
+          : branchLabel(heavenlyVirtue.key),
+      theme: "Protection, goodwill, smoother resolution of difficulties.",
+      caution: null,
+      active,
+    });
+  }
+
+  if (fiveGhostsBranchKey) {
+    stars.push({
+      key: "fiveGhosts",
+      name: "Five Ghosts",
+      zh: "五鬼",
+      branch: branchLabel(fiveGhostsBranchKey),
+      theme: null,
+      caution: "Can show as friction, misunderstandings, or obstacles needing extra care to resolve.",
+      active: branchPresentInPillars(pillars, fiveGhostsBranchKey),
+    });
+  }
+
+  if (robberyShaBranchKey) {
+    stars.push({
+      key: "robberySha",
+      name: "Robbery Sha",
+      zh: "劫殺",
+      branch: branchLabel(robberyShaBranchKey),
+      theme: null,
+      caution: "Can show as sudden setbacks or loss requiring more cautious decision-making.",
+      active: branchPresentInPillars(pillars, robberyShaBranchKey),
     });
   }
 

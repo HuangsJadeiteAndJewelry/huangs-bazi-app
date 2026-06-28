@@ -170,6 +170,9 @@ export function buildPaidReportSchemaV1(chart) {
     personalDirectionsAndStars: {
       eightMansions: chart?.eightMansionsV1 || null,
       shenSha: chart?.shenShaV1 || null,
+      luckPillars: chart?.luckPillarsV1 || null,
+      lifePalace: chart?.lifePalaceV1 || null,
+      conceptionPalace: chart?.conceptionPalaceV1 || null,
     },
 
     futureModules: {
