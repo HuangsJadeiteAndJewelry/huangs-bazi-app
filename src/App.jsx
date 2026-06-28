@@ -670,89 +670,6 @@ function TopStrengthsSection({ strengths }) {
   );
 }
 
-function FocusRankingSection({ focusRanking, selectedYear }) {
-  if (!Array.isArray(focusRanking) || focusRanking.length === 0) return null;
-
-  return (
-    <section className="rounded-[36px] border border-blue-200 bg-white px-8 py-10 shadow-md md:px-10">
-      <p className="inline-flex rounded-full bg-blue-50 px-4 py-2 text-xs font-bold uppercase tracking-[0.28em] text-blue-700">
-        🧭 Your {selectedYear} Priorities
-      </p>
-
-      <h2 className="mt-5 text-3xl font-bold tracking-tight text-slate-950 md:text-4xl">
-        What To Prioritise This Year
-      </h2>
-
-      <p className="mt-4 max-w-4xl text-base leading-7 text-stone-600">
-        This ranking shows which life areas deserve the most attention this
-        year, so you know where to focus instead of trying to improve everything
-        at once.
-      </p>
-
-      <div className="mt-8 space-y-5">
-        {focusRanking.map((item, index) => (
-          <div
-            key={`${item.key || item.area}-${index}`}
-            className="rounded-[28px] border border-slate-200 bg-[#FFFDF8] p-7 shadow-sm"
-          >
-            <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-              <div>
-                <p className="text-xs font-bold uppercase tracking-[0.25em] text-blue-700">
-                  Priority {item.rank || index + 1}
-                </p>
-
-                <h3 className="mt-3 text-2xl font-bold text-slate-950">
-                  {item.area || "Life Area"}
-                </h3>
-
-                {item.priority && (
-                  <p className="mt-2 text-sm font-semibold text-blue-700">
-                    {item.priority}
-                  </p>
-                )}
-              </div>
-
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-blue-50 text-xl font-bold text-blue-700">
-                {item.rank || index + 1}
-              </div>
-            </div>
-
-            {item.description && (
-              <p className="mt-5 max-w-5xl text-base leading-7 text-stone-600">
-                {item.description}
-              </p>
-            )}
-
-            <div className="mt-6 grid gap-5 md:grid-cols-2">
-              <div className="rounded-2xl border border-blue-100 bg-blue-50 p-5">
-                <h4 className="text-base font-bold text-blue-900">
-                  Why this matters
-                </h4>
-
-                <p className="mt-3 text-sm leading-6 text-blue-800">
-                  {item.reason ||
-                    "This area is important because it affects your choices, energy and growth this year."}
-                </p>
-              </div>
-
-              <div className="rounded-2xl border border-green-100 bg-green-50 p-5">
-                <h4 className="text-base font-bold text-green-900">
-                  What to do
-                </h4>
-
-                <p className="mt-3 text-sm leading-6 text-green-800">
-                  {item.action ||
-                    "Focus on one clear next step that helps this area become easier to manage."}
-                </p>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
 function RelationshipArchetypeSection({ relationshipArchetype }) {
   if (!relationshipArchetype) return null;
 
@@ -795,40 +712,11 @@ function RelationshipArchetypeSection({ relationshipArchetype }) {
         </div>
       )}
 
-      <div className="mt-7 grid gap-5 md:grid-cols-2">
-        <InsightList
-          icon="✨"
-          title="Relationship Strengths"
-          items={relationshipArchetype.strengths}
-        />
-
-        <InsightList
-          icon="⚠️"
-          title="Relationship Blind Spots"
-          items={relationshipArchetype.blindSpots}
-        />
-      </div>
-
-      <div className="mt-5 grid gap-5 md:grid-cols-2">
-        <InsightList
-          icon="✅"
-          title="Green Flags"
-          items={relationshipArchetype.greenFlags}
-        />
-
-        <InsightList
-          icon="🚩"
-          title="Red Flags"
-          items={relationshipArchetype.redFlags}
-        />
-      </div>
-
-      <div className="mt-5">
-        <InsightList
-          icon="💍"
-          title="What You Need In A Partner"
-          items={relationshipArchetype.partnerNeeds}
-        />
+      <div className="mt-7 rounded-[28px] border border-rose-100 bg-rose-50 p-7">
+        <p className="text-base leading-7 text-rose-800">
+          Your full reading covers your relationship strengths, blind spots,
+          compatibility green/red flags and exactly what you need in a partner.
+        </p>
       </div>
     </section>
   );
@@ -977,66 +865,13 @@ function TopProfileStrengthSection({ chart, uiChart }) {
       </div>
 
       {!!supporting.length && (
-  <div className="mt-8 rounded-[28px] border border-slate-200 bg-[#FFFDF8] p-7 shadow-sm">
-    <h3 className="text-xl font-bold text-slate-950">
-      Understanding Your Archetypes
-    </h3>
-
-        <p className="mt-3 max-w-5xl text-stone-600">
-      Each archetype represents a different part of your personality,
-      decision-making style and life approach. Stronger archetypes tend to
-      appear more naturally, while quieter archetypes may emerge in specific
-      situations, relationships or stages of life.
-    </p>
-
-    <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-      {supporting.map((item) => {
-        const isDormant = item.score === 0;
-
-        return (
-          <div
-            key={item.key}
-            className={`rounded-2xl border p-5 ${
-              isDormant
-                ? "border-slate-200 bg-slate-50 opacity-75"
-                : "border-slate-200 bg-white"
-            }`}
-          >
-            <div className="flex items-start justify-between">
-              <div>
-                <h4 className="text-lg font-bold text-slate-950">
-                  {item.icon} {item.name}
-                </h4>
-
-                <p className="text-sm text-stone-500">
-                  {item.actualName}
-                </p>
-
-                <p className="mt-1 text-xs text-stone-400">
-                  {item.subtitle}
-                </p>
-              </div>
-
-              <span
-                className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                  isDormant
-                    ? "bg-slate-100 text-slate-500"
-                    : "bg-red-50 text-red-700"
-                }`}
-              >
-                {isDormant ? "Dormant" : `${item.score}%`}
-              </span>
-            </div>
-
-            <p className="mt-4 text-sm leading-6 text-stone-600">
-              {item.theme}
-            </p>
-          </div>
-        );
-      })}
-    </div>
-  </div>
-)}
+        <div className="mt-8 rounded-[28px] border border-slate-200 bg-[#FFFDF8] p-7 shadow-sm">
+          <p className="text-base text-stone-600">
+            You have <strong>{supporting.length} more personality patterns</strong>{" "}
+            in your chart — see the complete 10-pattern breakdown in your full reading.
+          </p>
+        </div>
+      )}
     </section>
   );
 }
@@ -1229,319 +1064,6 @@ function ProductRecommendationsSection({ products }) {
   );
 }
 
-function WealthArchetypeSection({ wealth }) {
-  if (!wealth) return null;
-
-  return (
-    <section className="rounded-[28px] border border-emerald-200 bg-white px-8 py-8 shadow-md">
-      <p className="text-xs font-semibold uppercase tracking-[0.28em] text-emerald-600">
-        Wealth Archetype
-      </p>
-
-      <h2 className="mt-3 text-3xl font-bold text-slate-950">
-        {wealth.wealthArchetype || "Your Wealth Style"}
-      </h2>
-
-      <p className="mt-4 text-lg text-emerald-700 font-semibold">
-        {wealth.wealthStyle}
-      </p>
-
-      <p className="mt-5 max-w-4xl text-base leading-7 text-stone-600">
-        {wealth.incomePath}
-      </p>
-
-      <div className="mt-8 grid gap-5 md:grid-cols-2">
-        <div className="rounded-2xl border border-slate-200 p-6">
-          <h3 className="text-xl font-bold text-slate-950">
-            💰 Income Style
-          </h3>
-
-          <p className="mt-4 text-base text-stone-600">
-            {wealth.incomeStyle}
-          </p>
-
-          <div className="mt-5 flex flex-wrap gap-2">
-            {(wealth.idealIncomeModels || []).map((model) => (
-              <span
-                key={model}
-                className="rounded-full bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-700"
-              >
-                {model}
-              </span>
-            ))}
-          </div>
-        </div>
-
-        <div className="rounded-2xl border border-slate-200 p-6">
-          <h3 className="text-xl font-bold text-slate-950">
-            🧠 Wealth Mindset
-          </h3>
-
-          <p className="mt-4 text-base text-stone-600">
-            {wealth.moneyMindset}
-          </p>
-
-          <div className="mt-5 flex flex-wrap gap-2">
-            {wealth.primaryUsefulGod && (
-              <span className="rounded-full bg-blue-50 px-3 py-2 text-sm font-medium text-blue-700">
-                Primary Support: {wealth.primaryUsefulGod}
-              </span>
-            )}
-
-            {wealth.secondaryUsefulGod && (
-              <span className="rounded-full bg-purple-50 px-3 py-2 text-sm font-medium text-purple-700">
-                Secondary Support: {wealth.secondaryUsefulGod}
-              </span>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {!!wealth.moneyStrengths?.length && (
-        <div className="mt-8 rounded-2xl border border-green-100 bg-green-50 p-6">
-          <h3 className="text-xl font-bold text-green-900">
-            ✨ Wealth Strengths
-          </h3>
-
-          <ul className="mt-4 space-y-3">
-            {wealth.moneyStrengths.map((item) => (
-              <li key={item} className="text-green-800">
-                • {item}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {!!wealth.moneyBlindSpots?.length && (
-        <div className="mt-6 rounded-2xl border border-red-100 bg-red-50 p-6">
-          <h3 className="text-xl font-bold text-red-900">
-            ⚠ Wealth Blind Spots
-          </h3>
-
-          <ul className="mt-4 space-y-3">
-            {wealth.moneyBlindSpots.map((item) => (
-              <li key={item} className="text-red-800">
-                • {item}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </section>
-  );
-}
-
-function RelationshipPatternSection({ relationshipPattern }) {
-  if (!relationshipPattern) return null;
-
-  const hasContent =
-    relationshipPattern.relationshipStyle ||
-    relationshipPattern.relationshipPattern ||
-    relationshipPattern.summary ||
-    relationshipPattern.emotionalNeeds?.length ||
-    relationshipPattern.relationshipStrengths?.length ||
-    relationshipPattern.relationshipBlindSpots?.length ||
-    relationshipPattern.idealPartnerTraits?.length ||
-    relationshipPattern.growthAdvice?.length;
-
-  if (!hasContent) return null;
-
-  return (
-    <section className="rounded-[28px] border border-rose-200 bg-white px-8 py-8 shadow-md">
-      <p className="text-xs font-semibold uppercase tracking-[0.28em] text-rose-700">
-        Relationship Growth Insights
-      </p>
-
-      <h2 className="mt-3 text-3xl font-bold text-slate-950">
-        How You Can Grow In Relationships
-      </h2>
-
-      <p className="mt-5 max-w-4xl text-base leading-7 text-stone-600">
-        {relationshipPattern.summary ||
-          relationshipPattern.relationshipPattern ||
-          "This section shows the emotional habits, needs and growth patterns that affect how you build trust and connection over time."}
-      </p>
-
-      <div className="mt-8 grid gap-5 md:grid-cols-2">
-        {!!relationshipPattern.emotionalNeeds?.length && (
-          <div className="rounded-2xl border border-rose-100 bg-rose-50 p-6">
-            <h3 className="text-xl font-bold text-rose-900">
-              ❤️ Emotional Needs
-            </h3>
-
-            <ul className="mt-4 space-y-3">
-              {relationshipPattern.emotionalNeeds.map((item) => (
-                <li key={item} className="text-rose-800">
-                  • {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        {!!relationshipPattern.idealPartnerTraits?.length && (
-          <div className="rounded-2xl border border-purple-100 bg-purple-50 p-6">
-            <h3 className="text-xl font-bold text-purple-900">
-              💍 Ideal Partner Traits
-            </h3>
-
-            <ul className="mt-4 space-y-3">
-              {relationshipPattern.idealPartnerTraits.map((item) => (
-                <li key={item} className="text-purple-800">
-                  • {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </div>
-
-      <div className="mt-6 grid gap-5 md:grid-cols-2">
-        {!!relationshipPattern.relationshipStrengths?.length && (
-          <div className="rounded-2xl border border-green-100 bg-green-50 p-6">
-            <h3 className="text-xl font-bold text-green-900">
-              ✨ Relationship Strengths
-            </h3>
-
-            <ul className="mt-4 space-y-3">
-              {relationshipPattern.relationshipStrengths.map((item) => (
-                <li key={item} className="text-green-800">
-                  • {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        {!!relationshipPattern.relationshipBlindSpots?.length && (
-          <div className="rounded-2xl border border-red-100 bg-red-50 p-6">
-            <h3 className="text-xl font-bold text-red-900">
-              ⚠ Relationship Blind Spots
-            </h3>
-
-            <ul className="mt-4 space-y-3">
-              {relationshipPattern.relationshipBlindSpots.map((item) => (
-                <li key={item} className="text-red-800">
-                  • {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </div>
-
-      {!!relationshipPattern.growthAdvice?.length && (
-        <div className="mt-6 rounded-2xl border border-blue-100 bg-blue-50 p-6">
-          <h3 className="text-xl font-bold text-blue-900">
-            🌱 Relationship Growth Advice
-          </h3>
-
-          <ul className="mt-4 space-y-3">
-            {relationshipPattern.growthAdvice.map((item) => (
-              <li key={item} className="text-blue-800">
-                • {item}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-    </section>
-  );
-}
-
-function GrowthAdviceSection({ growthAdvice }) {
-  if (!growthAdvice) return null;
-
-  return (
-    <section className="rounded-[28px] border border-blue-200 bg-white px-8 py-8 shadow-md">
-      <p className="text-xs font-semibold uppercase tracking-[0.28em] text-blue-700">
-        Your Next Growth Phase
-      </p>
-
-      <h2 className="mt-3 text-3xl font-bold text-slate-950">
-        {growthAdvice.growthFocus || "Your Growth Direction"}
-      </h2>
-
-      <p className="mt-5 max-w-4xl text-base leading-7 text-stone-600">
-        {growthAdvice.summary}
-      </p>
-
-      <div className="mt-8 grid gap-5 md:grid-cols-2">
-        <div className="rounded-2xl border border-green-100 bg-green-50 p-6">
-          <h3 className="text-xl font-bold text-green-900">
-            ✨ Strengths To Lean On
-          </h3>
-
-          <ul className="mt-4 space-y-3">
-            {(growthAdvice.growthStrengths || []).map((item) => (
-              <li key={item} className="text-green-800">
-                • {item}
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="rounded-2xl border border-red-100 bg-red-50 p-6">
-          <h3 className="text-xl font-bold text-red-900">
-            ⚠ Patterns To Avoid
-          </h3>
-
-          <ul className="mt-4 space-y-3">
-            {(growthAdvice.avoidPatterns || []).map((item) => (
-              <li key={item} className="text-red-800">
-                • {item}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-
-      <div className="mt-6 rounded-2xl border border-blue-100 bg-blue-50 p-6">
-        <h3 className="text-xl font-bold text-blue-900">
-          🚀 Next Level Actions
-        </h3>
-
-        <ul className="mt-4 space-y-3">
-          {(growthAdvice.nextLevelActions || []).map((item) => (
-            <li key={item} className="text-blue-800">
-              • {item}
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {growthAdvice.supportiveEnergy?.primaryUsefulGod && (
-        <div className="mt-6 rounded-2xl border border-yellow-100 bg-yellow-50 p-6">
-          <h3 className="text-xl font-bold text-yellow-900">
-            🌿 Supportive Energy
-          </h3>
-
-          <p className="mt-4 text-yellow-800">
-            Primary Useful God:{" "}
-            <strong>
-              {growthAdvice.supportiveEnergy.primaryUsefulGod}
-            </strong>
-          </p>
-
-          {growthAdvice.supportiveEnergy.secondaryUsefulGod && (
-            <p className="mt-2 text-yellow-800">
-              Secondary Support:{" "}
-              <strong>
-                {growthAdvice.supportiveEnergy.secondaryUsefulGod}
-              </strong>
-            </p>
-          )}
-
-          <p className="mt-4 text-sm text-yellow-700">
-            {growthAdvice.supportiveEnergy.note}
-          </p>
-        </div>
-      )}
-    </section>
-  );
-}
 
 function EmotionalEnergyBalance({ elements }) {
   const elementRows = (elements || []).map((element) => {
@@ -1659,134 +1181,24 @@ function EmotionalEnergyBalance({ elements }) {
   );
 }
 
-function getFriendlyCoreEnergyStatus(status, score) {
-  const numericScore = Number(score);
-
-  if (Number.isFinite(numericScore)) {
-    if (numericScore >= 80) return "Very Strong";
-    if (numericScore >= 65) return "Strong";
-    if (numericScore >= 45) return "Balanced";
-    if (numericScore >= 25) return "Gentle";
-    return "Needs Support";
-  }
-
-  if (status === "Excessive") return "Very Strong";
-  if (status === "Under-supported") return "Needs Support";
-
-  return status || "-";
-}
-
-function formatCoreEnergyScore(score) {
-  const numericScore = Number(score);
-
-  if (!Number.isFinite(numericScore)) return "";
-
-  return `Strength Score: ${numericScore.toFixed(2)} / 100`;
-}
-
 function UsefulGodSection({ balance }) {
   if (!balance) return null;
 
-    const coreEnergyStatus = getFriendlyCoreEnergyStatus(
-    balance?.coreEnergyStatus,
-    balance?.coreEnergyScore
-  );
-  const coreEnergyScore = formatCoreEnergyScore(balance?.coreEnergyScore);
-  const seasonalDominantElement = balance?.seasonalDominantElement || "-";
-  const supportiveElements = balance?.supportiveElements || [];
-  const cautionElements = balance?.cautionElements || [];
-
-  const explanation =
-    balance?.explanation ||
-    "Focusing on supportive elements can help you stay emotionally grounded, reduce internal pressure and create more flow in your daily life.";
-
-  const balanceCards = [
-        {
-      emoji: "🧘",
-      label: "Core Energy Strength",
-      value: coreEnergyStatus,
-      score: coreEnergyScore,
-      text: "This shows how strong your core chart energy is, without labelling it as good or bad.",
-    },
-    {
-      emoji: "🌿",
-      label: "Environmental Energy",
-      value: seasonalDominantElement,
-      score: "",
-      text: "This shows the strongest surrounding energy influencing your natural temperament and timing.",
-    },
-    {
-      emoji: "👍",
-      label: "Supportive Elements",
-      value: supportiveElements.length ? supportiveElements.join(" · ") : "-",
-      score: "",
-      text: "These elements help restore balance, improve flow and support better decision-making.",
-    },
-    {
-      emoji: "🛡️",
-      label: "Elements to Balance Carefully",
-      value: cautionElements.length ? cautionElements.join(" · ") : "-",
-      score: "",
-      text: "These elements are not bad, but too much of them may create pressure, overthinking or imbalance.",
-    },
-  ];
-
   return (
     <section className="rounded-[28px] border border-slate-200 bg-white px-8 py-8 shadow-md">
-      <div className="mb-8 inline-flex items-center rounded-full bg-yellow-50 px-4 py-2 text-sm font-bold uppercase tracking-[0.18em] text-orange-700">
+      <p className="text-xs font-bold uppercase tracking-[0.28em] text-orange-700">
         ✨ Energy Guidance
-      </div>
+      </p>
 
-      <h2 className="text-3xl font-bold tracking-tight text-slate-950">
+      <h2 className="mt-3 text-3xl font-bold text-slate-950">
         Personal Energy Balance
       </h2>
 
-      <p className="mt-5 text-lg leading-relaxed text-stone-500">
-        Discover the energies that support your well-being and those to be mindful of.
+      <p className="mt-4 max-w-4xl text-base leading-7 text-stone-600">
+        Your chart has specific elements that support you and others that need
+        more care — knowing exactly which ones helps you make better decisions
+        in daily life. This is one of the deeper insights covered in your full reading.
       </p>
-
-      <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-        {balanceCards.map((item) => (
-          <div
-            key={item.label}
-            className="rounded-[24px] border border-slate-200 bg-white p-6 shadow-sm"
-          >
-            <div className="flex items-start gap-4">
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-slate-100 text-3xl">
-                {item.emoji}
-              </div>
-
-              <div>
-                <p className="text-sm font-bold uppercase tracking-[0.18em] text-stone-500">
-                  {item.label}
-                </p>
-
-                <h3 className="mt-4 text-2xl font-bold text-slate-950">
-                  {item.value}
-                </h3>
-
-                {item.score && (
-                  <p className="mt-1 text-sm text-stone-500">{item.score}</p>
-                )}
-              </div>
-            </div>
-
-            <p className="mt-5 text-sm leading-6 text-stone-600">
-              {item.text}
-            </p>
-          </div>
-        ))}
-      </div>
-
-      <div className="mt-8 rounded-2xl bg-yellow-50 p-6">
-        <p className="text-lg font-bold text-slate-950">
-          ✨ What this means for you
-        </p>
-
-        <p className="mt-4 text-base leading-relaxed text-stone-600">
-          {explanation}
-        </p>
-      </div>
     </section>
   );
 }
@@ -2468,14 +1880,34 @@ function AdminFullReport({ report, clientName }) {
 
       <AdminReportSection icon="🧭" title="Long-Term Life Direction">
         {!!lifeThemes.primaryThemes?.length && (
-          <p className="mt-3 text-base text-stone-700">
-            <strong>Primary themes:</strong> {lifeThemes.primaryThemes.join(" · ")}
-          </p>
+          <div className="mt-3 space-y-3">
+            <p className="text-sm font-bold uppercase tracking-[0.18em] text-amber-700">
+              Primary Themes
+            </p>
+            {lifeThemes.primaryThemes.map((theme) => (
+              <div key={theme}>
+                <p className="text-base font-semibold text-slate-900">{theme}</p>
+                <p className="mt-1 text-base leading-7 text-stone-700">
+                  {THEME_DESCRIPTIONS[theme]}
+                </p>
+              </div>
+            ))}
+          </div>
         )}
         {!!lifeThemes.supportingThemes?.length && (
-          <p className="mt-2 text-base text-stone-700">
-            <strong>Supporting themes:</strong> {lifeThemes.supportingThemes.join(" · ")}
-          </p>
+          <div className="mt-5 space-y-3">
+            <p className="text-sm font-bold uppercase tracking-[0.18em] text-amber-700">
+              Supporting Themes
+            </p>
+            {lifeThemes.supportingThemes.map((theme) => (
+              <div key={theme}>
+                <p className="text-base font-semibold text-slate-900">{theme}</p>
+                <p className="mt-1 text-base leading-7 text-stone-700">
+                  {THEME_DESCRIPTIONS[theme]}
+                </p>
+              </div>
+            ))}
+          </div>
         )}
         {growthAdvice.summary && (
           <p className="mt-3 text-base leading-7 text-stone-700">{growthAdvice.summary}</p>
@@ -2774,85 +2206,28 @@ function PremiumInsights({ report, isAdmin = false, fullReport = null, clientNam
         ))}
       </div>
 
-      <div className="mt-8 rounded-[28px] border border-yellow-200 bg-yellow-50 p-7">
-        <h3 className="text-2xl font-bold text-slate-950">
-          Want the complete personalised breakdown?
+      <div className="mt-10 rounded-[28px] border border-yellow-500 bg-slate-950 px-6 py-14 text-center shadow-xl">
+        <p className="mb-4 text-sm font-semibold tracking-[0.35em] text-yellow-400">
+          WANT THE FULL PICTURE?
+        </p>
+
+        <h3 className="mx-auto max-w-4xl text-3xl font-bold leading-tight text-white md:text-5xl">
+          Unlock Your Full Bazi Destiny Blueprint
         </h3>
 
-        <p className="mt-4 max-w-4xl text-base leading-7 text-stone-700">
-          The full consultation helps you understand not only what your chart shows, but how to apply it in your career, money decisions, relationships, wellness and personal growth.
+        <p className="mx-auto mt-6 max-w-4xl text-lg leading-relaxed text-slate-300 md:text-xl">
+          Your free profile reveals your surface energetic tendencies. A full consultation goes deeper into your Bazi structure, favourable elements, emotional patterns, career timing, relationship dynamics and long-term life cycles.
         </p>
+
+        <a
+          href="https://www.huangsjadeiteandjewelry.com/collections/singapore-feng-shui-master-services-%E5%BC%80%E5%85%89-kai-guang/products/personal-feng-shui-energy-analysis-gemstone-alignment"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-10 inline-block rounded-2xl bg-orange-500 px-10 py-4 text-sm font-semibold text-white shadow-lg transition hover:bg-orange-400"
+        >
+          Book Full Reading
+        </a>
       </div>
-    </section>
-  );
-}
-
-function InsightList({ icon, title, items }) {
-  if (!items?.length) return null;
-
-  return (
-    <div className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
-      <div className="flex items-center gap-3">
-        <div className="flex h-11 w-11 items-center justify-center rounded-full bg-orange-50 text-2xl">
-          {icon}
-        </div>
-
-        <h3 className="text-xl font-bold text-slate-950">{title}</h3>
-      </div>
-
-      <ul className="mt-5 space-y-4 text-base leading-7 text-stone-600">
-        {items.map((item) => (
-          <li key={item} className="flex gap-3">
-            <span className="mt-1 text-orange-600">•</span>
-            <span>{item}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-function InsightParagraph({ icon, title, text }) {
-  if (!text) return null;
-
-  return (
-    <div className="rounded-[28px] border border-slate-200 bg-white p-7 shadow-sm">
-      <div className="flex items-center gap-3">
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-orange-50 text-2xl">
-          {icon}
-        </div>
-
-        <h3 className="text-xl font-bold text-slate-950">{title}</h3>
-      </div>
-
-      <p className="mt-5 text-base leading-8 text-stone-600">{text}</p>
-    </div>
-  );
-}
-
-function CTASection() {
-  return (
-    <section className="mt-8 rounded-[28px] border border-yellow-500 bg-slate-950 px-6 py-14 text-center shadow-xl">
-      <p className="mb-4 text-sm font-semibold tracking-[0.35em] text-yellow-400">
-        WANT THE FULL PICTURE?
-      </p>
-
-      <h2 className="mx-auto max-w-4xl text-3xl font-bold leading-tight text-white md:text-5xl">
-        Unlock Your Full Bazi Destiny Blueprint
-      </h2>
-
-      <p className="mx-auto mt-6 max-w-4xl text-lg leading-relaxed text-slate-300 md:text-xl">
-        Your free profile reveals your surface energetic tendencies. A full consultation goes deeper into your Bazi structure, favourable elements, emotional patterns, career timing, relationship dynamics and long-term life cycles.
-      </p>
-
-      <a
-        href="https://www.huangsjadeiteandjewelry.com/collections/singapore-feng-shui-master-services-%E5%BC%80%E5%85%89-kai-guang/products/personal-feng-shui-energy-analysis-gemstone-alignment"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="mt-10 inline-block rounded-2xl bg-orange-500 px-10 py-4 text-sm font-semibold text-white shadow-lg transition hover:bg-orange-400"
-      >
-        Book Full Reading
-      </a>
     </section>
   );
 }
@@ -2993,258 +2368,64 @@ function LifeGuidanceSection({ guidance }) {
   );
 }
 
-function getLifeAreaStatus(item, fallbackFocus) {
-  const text = [
-    item?.status,
-    item?.title,
-    item?.explanation,
-    item?.advice,
-    item?.summary,
-    item?.description,
-    ...(item?.bullets || []),
-  ]
-    .filter(Boolean)
-    .join(" ")
-    .toLowerCase();
+const THEME_DESCRIPTIONS = {
+  "Creative Expression":
+    "Your growth comes through expressing ideas, emotions and creativity more honestly. When you allow your voice, style and perspective to be seen, opportunities and self-confidence can open naturally.",
 
-  const focus = String(fallbackFocus || "").toLowerCase();
+  "Building Support Systems":
+    "Your path improves when you stop carrying everything alone and build reliable support around you. The right people, routines and systems can help you feel safer, steadier and less overwhelmed.",
 
-  const rawScore =
-    item?.displayScore ??
-    item?.score ??
-    item?.percentage ??
-    item?.intensity ??
-    item?.confidence ??
-    null;
+  "Adaptability and Learning":
+    "You grow through curiosity, flexibility and being willing to learn from changing situations. Rather than needing one fixed path, your chart benefits when you stay open and adjust with awareness.",
 
-  const score = typeof rawScore === "number" ? normalizeScore(rawScore) : null;
+  "Sharing Ideas":
+    "Your ideas are part of your value. Speaking, teaching, explaining or sharing your perspective can help others understand you better and create stronger opportunities over time.",
 
-  const hasPressure =
-    text.includes("avoid") ||
-    text.includes("caution") ||
-    text.includes("pressure") ||
-    text.includes("overload") ||
-    text.includes("imbalance") ||
-    text.includes("stress") ||
-    text.includes("drain") ||
-    text.includes("rest") ||
-    text.includes("restore") ||
-    text.includes("recovery");
+  "Innovation":
+    "You are not meant to only repeat old methods. This theme supports fresh thinking, experimentation and finding better ways to solve problems or express your abilities.",
 
-  const hasStrong =
-    text.includes("strong") ||
-    text.includes("strongest") ||
-    text.includes("strength") ||
-    text.includes("favourable") ||
-    text.includes("favorable") ||
-    text.includes("valued");
+  "Relationships and Connections":
+    "Your growth often comes through the people you meet, the trust you build and the communities you choose to be part of. The right connections can open doors, but weak boundaries may also make you feel stretched.",
 
-  const hasOpportunity =
-    text.includes("opportunity") ||
-    text.includes("opportunities") ||
-    text.includes("result") ||
-    text.includes("results") ||
-    text.includes("produce") ||
-    text.includes("wealth") ||
-    text.includes("financial") ||
-    text.includes("value");
+  "Balancing Independence and Support":
+    "One of your recurring lessons is knowing when to carry things yourself and when to allow the right people to support you. You do not need to prove your strength by doing everything alone.",
 
-  const hasGrowth =
-    text.includes("develop") ||
-    text.includes("growth") ||
-    text.includes("learning") ||
-    text.includes("build") ||
-    text.includes("support") ||
-    text.includes("communication") ||
-    text.includes("visibility") ||
-    text.includes("knowledge") ||
-    text.includes("problem-solving") ||
-    text.includes("relationship-building");
+  "Strategic Decision Making":
+    "Long-term progress becomes stronger when you slow down, choose clearly and avoid reacting to every opportunity at once. Your chart benefits from structure, timing and better prioritisation.",
 
-  const hasConnection =
-    text.includes("relationship") ||
-    text.includes("connection") ||
-    text.includes("trust") ||
-    text.includes("shared") ||
-    text.includes("emotional") ||
-    text.includes("understanding");
+  "Building Through People":
+    "Opportunities become stronger when relationships, collaboration and shared direction are handled with care. People are not just distractions; the right people can become part of your growth system.",
 
-  if (focus === "career") {
-    if (hasPressure) return "Needs Focus";
-    if (score !== null && score >= 75) return "Strong Direction";
-    if (hasStrong) return "Strong Direction";
-    return hasGrowth ? "Building Momentum" : "Developing Direction";
-  }
+  "Trust and Reciprocity":
+    "Your path asks you to build exchanges where support, effort and loyalty can flow both ways. You grow when you stop overgiving and start noticing who also shows up for you.",
 
-  if (focus === "wealth") {
-    if (hasPressure) return "Needs Discipline";
-    if (score !== null && score >= 75) return "Strong Potential";
-    if (hasStrong) return "Strong Potential";
-    return hasOpportunity ? "Active Opportunities" : "Building Stability";
-  }
+  "Knowledge and Wisdom":
+    "Your growth is strongly linked to learning, reflection and turning insight into practical direction. The more you understand yourself and your environment, the easier it becomes to make aligned choices.",
 
-  if (focus === "relationship") {
-    if (hasPressure) return "Needs Clarity";
-    if (score !== null && score >= 75) return "Strong Connection";
-    if (hasStrong) return "Strong Connection";
-    return hasConnection ? "Deepening Connections" : "Developing Trust";
-  }
+  "Growth and Expansion":
+    "This theme points to a period where new experiences, new people or new responsibilities can help you mature. Expansion works best when it is supported by grounding and clear priorities.",
 
-  if (focus === "wellness") {
-    if (hasPressure) return "Needs Restoration";
-    if (score !== null && score >= 75) return "Stable Support";
-    if (hasStrong) return "Stable Support";
-    return "Restoring Balance";
-  }
+  "Creating Stability":
+    "Your chart benefits when you build routines, foundations and dependable systems instead of relying only on short bursts of motivation. Stability gives your potential somewhere safe to grow.",
 
-  if (hasPressure) return "Needs Balance";
-  if (hasStrong) return "Strong";
-  if (hasOpportunity) return "Active";
-  if (hasGrowth) return "Developing";
+  "Visibility and Influence":
+    "This theme asks you to be seen more clearly, but in a way that feels grounded, intentional and aligned with your values. Your influence grows when visibility is supported by purpose.",
 
-  return "Active";
-}
+  "Emotional Clarity":
+    "Your growth comes from understanding what you truly feel before reacting, pleasing others or withdrawing. Clear emotions help you communicate better and choose relationships more wisely.",
 
-function getStatusStyle(status) {
-  const strongStatuses = [
-    "Strong",
-    "Strong Direction",
-    "Strong Potential",
-    "Strong Connection",
-    "Stable Support",
-  ];
+  "Personal Boundaries":
+    "This theme asks you to protect your energy, time and emotional space. Healthy boundaries do not make you cold; they help your relationships and decisions become cleaner.",
 
-  const activeStatuses = [
-    "Active",
-    "Active Opportunities",
-    "Building Momentum",
-  ];
+  "Discipline and Responsibility":
+    "You grow by turning pressure into maturity, structure and dependable action. This theme supports consistency, but also reminds you not to carry responsibility until it becomes emotional heaviness.",
 
-  const developingStatuses = [
-    "Developing",
-    "Developing Direction",
-    "Developing Trust",
-    "Deepening Connections",
-    "Building Stability",
-    "Restoring Balance",
-  ];
+  "Courage and Direction":
+    "Your chart pushes you to act with more courage and clarity. When you stop waiting for perfect certainty, your direction becomes stronger through movement and experience.",
 
-  const cautionStatuses = [
-    "Needs Balance",
-    "Needs Focus",
-    "Needs Discipline",
-    "Needs Clarity",
-    "Needs Restoration",
-  ];
-
-  if (strongStatuses.includes(status)) {
-    return {
-      badge: "bg-green-50 text-green-700",
-      bar: "bg-green-600",
-      width: "90%",
-    };
-  }
-
-  if (activeStatuses.includes(status)) {
-    return {
-      badge: "bg-orange-50 text-orange-700",
-      bar: "bg-orange-500",
-      width: "76%",
-    };
-  }
-
-  if (developingStatuses.includes(status)) {
-    return {
-      badge: "bg-blue-50 text-blue-700",
-      bar: "bg-blue-500",
-      width: "60%",
-    };
-  }
-
-  if (cautionStatuses.includes(status)) {
-    return {
-      badge: "bg-red-50 text-red-700",
-      bar: "bg-red-500",
-      width: "42%",
-    };
-  }
-
-  return {
-    badge: "bg-stone-100 text-stone-700",
-    bar: "bg-stone-500",
-    width: "65%",
-  };
-}
-
-function AnnualLifeOverview({ guidance, selectedYear }) {
-  const guidanceItems = [
-    normalizeGuidanceItem(guidance?.career, "Career", "💼"),
-    normalizeGuidanceItem(guidance?.wealth, "Wealth", "💰"),
-    normalizeGuidanceItem(guidance?.relationship, "Relationship", "❤️"),
-    normalizeGuidanceItem(guidance?.wellness || guidance?.health, "Wellness", "🌿"),
-  ].filter(Boolean);
-
-  if (!guidanceItems.length) return null;
-
-  return (
-    <section className="rounded-[28px] border border-slate-200 bg-white px-8 py-8 shadow-md">
-      <p className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-500">
-        Your {selectedYear} Life Energy Overview
-      </p>
-
-      <h2 className="mt-4 text-3xl font-bold text-slate-950 md:text-3xl">
-        Your {selectedYear} Life Areas
-      </h2>
-
-      <p className="mt-6 max-w-3xl text-lg leading-9 text-slate-600">
-        These 4 key areas show where your energy is flowing strongly, where growth is developing, and where better balance is needed.
-      </p>
-
-      <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-        {guidanceItems.map((item, index) => {
-          const status = getLifeAreaStatus(item, item.focus);
-          const statusStyle = getStatusStyle(status);
-
-          return (
-            <div
-              key={`${item.focus}-${index}`}
-              className="rounded-[32px] border border-zinc-200 bg-white p-6 shadow-sm"
-            >
-              <div className="flex items-center gap-5">
-                <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-orange-50 text-3xl">
-                  {item.icon}
-                </div>
-
-                <div>
-                  <h3 className="text-lg font-bold text-slate-950">
-                    {item.focus} Energy
-                  </h3>
-
-                  <div
-                    className={`mt-3 inline-block rounded-full px-4 py-2 text-sm font-bold uppercase tracking-[0.12em] ${statusStyle.badge}`}
-                  >
-                    {status}
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-8 h-4 overflow-hidden rounded-full bg-slate-100">
-                <div
-                  className={`h-full rounded-full ${statusStyle.bar}`}
-                  style={{ width: statusStyle.width }}
-                />
-              </div>
-
-              <p className="mt-6 text-sm leading-6 text-stone-600">
-                {item.explanation}
-              </p>
-            </div>
-          );
-        })}
-      </div>
-    </section>
-  );
-}
+  "Emotional Recovery":
+    "Your growth depends on knowing when to pause, rest and reset. Recovery is not a weakness here; it helps your system stay clear, sensitive and sustainable.",
+};
 
 function LifeThemesSection({ lifeThemes }) {
   const fallbackLifeThemes = {
@@ -3265,66 +2446,9 @@ function LifeThemesSection({ lifeThemes }) {
   const primaryThemes = (themeData.primaryThemes || []).slice(0, 3);
   const supportingThemes = (themeData.supportingThemes || []).slice(0, 2);
 
-              const themeDescriptions = {
-    "Creative Expression":
-      "Your growth comes through expressing ideas, emotions and creativity more honestly. When you allow your voice, style and perspective to be seen, opportunities and self-confidence can open naturally.",
-
-    "Building Support Systems":
-      "Your path improves when you stop carrying everything alone and build reliable support around you. The right people, routines and systems can help you feel safer, steadier and less overwhelmed.",
-
-    "Adaptability and Learning":
-      "You grow through curiosity, flexibility and being willing to learn from changing situations. Rather than needing one fixed path, your chart benefits when you stay open and adjust with awareness.",
-
-    "Sharing Ideas":
-      "Your ideas are part of your value. Speaking, teaching, explaining or sharing your perspective can help others understand you better and create stronger opportunities over time.",
-
-    "Innovation":
-      "You are not meant to only repeat old methods. This theme supports fresh thinking, experimentation and finding better ways to solve problems or express your abilities.",
-
-    "Relationships and Connections":
-      "Your growth often comes through the people you meet, the trust you build and the communities you choose to be part of. The right connections can open doors, but weak boundaries may also make you feel stretched.",
-
-    "Balancing Independence and Support":
-      "One of your recurring lessons is knowing when to carry things yourself and when to allow the right people to support you. You do not need to prove your strength by doing everything alone.",
-
-    "Strategic Decision Making":
-      "Long-term progress becomes stronger when you slow down, choose clearly and avoid reacting to every opportunity at once. Your chart benefits from structure, timing and better prioritisation.",
-
-    "Building Through People":
-      "Opportunities become stronger when relationships, collaboration and shared direction are handled with care. People are not just distractions; the right people can become part of your growth system.",
-
-    "Trust and Reciprocity":
-      "Your path asks you to build exchanges where support, effort and loyalty can flow both ways. You grow when you stop overgiving and start noticing who also shows up for you.",
-
-    "Knowledge and Wisdom":
-      "Your growth is strongly linked to learning, reflection and turning insight into practical direction. The more you understand yourself and your environment, the easier it becomes to make aligned choices.",
-
-    "Growth and Expansion":
-      "This theme points to a period where new experiences, new people or new responsibilities can help you mature. Expansion works best when it is supported by grounding and clear priorities.",
-
-    "Creating Stability":
-      "Your chart benefits when you build routines, foundations and dependable systems instead of relying only on short bursts of motivation. Stability gives your potential somewhere safe to grow.",
-
-    "Visibility and Influence":
-      "This theme asks you to be seen more clearly, but in a way that feels grounded, intentional and aligned with your values. Your influence grows when visibility is supported by purpose.",
-
-    "Emotional Clarity":
-      "Your growth comes from understanding what you truly feel before reacting, pleasing others or withdrawing. Clear emotions help you communicate better and choose relationships more wisely.",
-
-    "Personal Boundaries":
-      "This theme asks you to protect your energy, time and emotional space. Healthy boundaries do not make you cold; they help your relationships and decisions become cleaner.",
-
-    "Discipline and Responsibility":
-      "You grow by turning pressure into maturity, structure and dependable action. This theme supports consistency, but also reminds you not to carry responsibility until it becomes emotional heaviness.",
-
-    "Courage and Direction":
-      "Your chart pushes you to act with more courage and clarity. When you stop waiting for perfect certainty, your direction becomes stronger through movement and experience.",
-
-    "Emotional Recovery":
-      "Your growth depends on knowing when to pause, rest and reset. Recovery is not a weakness here; it helps your system stay clear, sensitive and sustainable.",
-  };
-
   if (!primaryThemes.length && !supportingThemes.length) return null;
+
+  const allThemes = [...primaryThemes, ...supportingThemes];
 
   return (
     <section className="rounded-[36px] border border-orange-200 bg-gradient-to-br from-white via-[#FFFDF8] to-orange-50 px-8 py-10 shadow-lg md:px-10">
@@ -3340,50 +2464,21 @@ function LifeThemesSection({ lifeThemes }) {
         These themes describe the patterns that repeatedly shape your growth, decisions, relationships and long-term direction.
       </p>
 
-      <div className="mt-8 space-y-5">
-        {primaryThemes.map((theme, index) => (
-          <div
-            key={`${theme}-${index}`}
-            className="rounded-[28px] border border-orange-100 bg-white/85 p-7 shadow-sm"
+      <div className="mt-8 flex flex-wrap gap-3">
+        {allThemes.map((theme) => (
+          <span
+            key={theme}
+            className="rounded-full border border-orange-200 bg-white px-5 py-3 text-base font-semibold text-slate-900"
           >
-            <p className="text-xs font-bold uppercase tracking-[0.25em] text-orange-700">
-              Primary Theme {index + 1}
-            </p>
-
-            <h3 className="mt-3 text-2xl font-bold text-slate-950">
-              {theme}
-            </h3>
-
-            <p className="mt-4 max-w-5xl text-base leading-8 text-stone-600">
-                                                                                              {themeDescriptions[theme] ||
-                "This theme highlights a recurring pattern in how your chart grows, makes decisions and responds to life. It becomes more meaningful when you work with it consciously instead of treating it as a background habit."}
-            </p>
-          </div>
+            {theme}
+          </span>
         ))}
       </div>
 
-      {supportingThemes.length > 0 && (
-        <div className="mt-8 rounded-[28px] border border-slate-200 bg-white p-7 shadow-sm">
-          <p className="text-sm font-bold uppercase tracking-[0.25em] text-stone-500">
-            Supporting Themes
-          </p>
-
-          <div className="mt-5 grid gap-4 md:grid-cols-2">
-            {supportingThemes.map((theme) => (
-              <div
-                key={theme}
-                className="rounded-2xl bg-stone-50 px-5 py-4"
-              >
-                <p className="font-semibold text-stone-800">{theme}</p>
-                <p className="mt-2 text-sm leading-6 text-stone-600">
-                                                  {themeDescriptions[theme] ||
-                    "This supporting theme adds another layer to your growth pattern. It may not be the loudest theme, but it quietly influences how you respond to people, timing and opportunities."}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      <p className="mt-6 max-w-4xl text-base leading-7 text-stone-600">
+        Your full reading explains what each of these themes means for your
+        growth, decisions and relationships.
+      </p>
     </section>
   );
 }
@@ -3478,33 +2573,11 @@ export default function HuangsBaZiUIFrontend() {
     setPopupOpen(true);
   }
 
-        const guidance =
-    chart?.practicalSupport?.guidance ||
-    chart?.practicalGuidanceV1 ||
-    uiChart?.guidance ||
-    uiChart?.practicalGuidance ||
-    null;
-
   const wealthArchetype =
     chart?.wealthArchetypeV2 ||
     chart?.wealthArchetypeV1 ||
     chart?.wealthArchetype ||
     uiChart?.wealthArchetype ||
-    null;
-
-  const growthAdvice =
-    chart?.growthAdviceV1 ||
-    chart?.growthAdvice ||
-    uiChart?.growthAdvice ||
-    uiChart?.lifeAreas?.growthAdvice ||
-    null;
-
-          const relationshipPattern =
-    chart?.relationshipPatternV1 ||
-    chart?.relationshipPattern ||
-    uiChart?.relationshipPattern ||
-    uiChart?.lifeAreas?.relationshipPattern ||
-    uiChart?.guidance?.relationship?.relationshipPattern ||
     null;
 
   const relationshipArchetype =
@@ -3520,13 +2593,6 @@ export default function HuangsBaZiUIFrontend() {
     chart?.topStrengths ||
     uiChart?.topStrengths ||
     uiChart?.personalityAndStructure?.topStrengths ||
-    [];
-
-  const focusRanking =
-    chart?.focusRankingV1 ||
-    chart?.focusRanking ||
-    uiChart?.focusRanking ||
-    uiChart?.lifeAreas?.focusRanking ||
     [];
 
   const previewReport = getFreePreviewReport(
@@ -3581,16 +2647,6 @@ export default function HuangsBaZiUIFrontend() {
 
             <TopProfileStrengthSection chart={chart} uiChart={uiChart} />
 
-            <AnnualLifeOverview
-              guidance={guidance}
-              selectedYear={submittedInput.selectedYear}
-            />
-
-            <FocusRankingSection
-              focusRanking={focusRanking}
-              selectedYear={submittedInput.selectedYear}
-            />
-
             <EmotionalEnergyBalance elements={uiChart?.elements} />
 
             <UsefulGodSection balance={uiChart?.personalEnergyBalance} />
@@ -3599,13 +2655,7 @@ export default function HuangsBaZiUIFrontend() {
               relationshipArchetype={relationshipArchetype}
             />
 
-            <RelationshipPatternSection
-              relationshipPattern={relationshipPattern}
-            />
-
-            <WealthArchetypeSection wealth={wealthArchetype} />
-
-            <GrowthAdviceSection growthAdvice={growthAdvice} />
+            <WealthTeaserSection wealth={wealthArchetype} />
 
             <LifeThemesSection
               lifeThemes={
@@ -3640,8 +2690,6 @@ export default function HuangsBaZiUIFrontend() {
               fullReport={chart?.paidReportSchemaV1}
               clientName={submittedInput?.name}
             />
-
-            <CTASection />
           </motion.div>
         ) : null}
       </div>
