@@ -84,6 +84,7 @@ export function buildPaidReportSchemaV1(chart) {
 
     chartFoundation: {
       pillars: chart?.pillars || null,
+      tenGodByPillar: chart?.tenGods?.byPillar || null,
       birthZodiac: chart?.birthZodiac || null,
       elementBalance: chart?.elementBalanceV3 || chart?.elementBalance || null,
       elementalBalance: buildElementalBalanceWithAnnual(chart),
@@ -130,6 +131,7 @@ export function buildPaidReportSchemaV1(chart) {
 
     annualEnergy: {
       annualOverlay: chart?.annualOverlayV3 || chart?.annualOverlay || null,
+      annualZodiac: chart?.annualOverlay?.zodiac || null,
       monthlyOverlay: chart?.monthlyOverlayV1 || null,
       selectedYear: chart?.input?.selectedYear || 2026,
     },

@@ -1316,6 +1316,10 @@ function AdminFullReport({ report, clientName }) {
   const luckPillars = report.personalDirectionsAndStars?.luckPillars || null;
   const lifePalace = report.personalDirectionsAndStars?.lifePalace || null;
   const conceptionPalace = report.personalDirectionsAndStars?.conceptionPalace || null;
+  const natalPillars = report.chartFoundation?.pillars || null;
+  const tenGodByPillar = report.chartFoundation?.tenGodByPillar || null;
+  const annualPillar = report.annualEnergy?.annualOverlay?.annualPillar || null;
+  const annualZodiac = report.annualEnergy?.annualZodiac || null;
 
   const rankedProfiles = [...(personality.tenProfileScoring?.rankedProfiles || [])].sort(
     (a, b) => b.percentage - a.percentage
@@ -1457,6 +1461,124 @@ function AdminFullReport({ report, clientName }) {
           ))}
         </tbody>
       </table>
+
+      {natalPillars && (
+        <div className="mt-8">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <h3 className="text-xl font-bold text-slate-950">Natal Chart</h3>
+
+            {annualPillar?.chinese && (
+              <p className="rounded-full bg-amber-50 px-4 py-1.5 text-sm font-semibold text-amber-800">
+                {report.annualEnergy?.selectedYear || "Annual"} Pillar:{" "}
+                {annualPillar.chinese}
+                {annualZodiac?.displayName ? ` (${annualZodiac.displayName})` : ""}
+              </p>
+            )}
+          </div>
+
+          <div className="mt-4 overflow-hidden rounded-2xl border border-slate-200">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-slate-50 text-left text-xs font-bold uppercase tracking-[0.12em] text-slate-600">
+                  <th className="px-4 py-2.5"></th>
+                  {["hour", "day", "month", "year"].map((key) => (
+                    <th key={key} className="px-4 py-2.5 capitalize">
+                      {key}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="border-t border-slate-100">
+                  <td className="px-4 py-2.5 font-semibold text-slate-700">
+                    Heavenly Stem
+                  </td>
+                  {["hour", "day", "month", "year"].map((key) => {
+                    const pillar = natalPillars[key];
+                    const tenGod = tenGodByPillar?.[key]?.stem;
+                    return (
+                      <td key={key} className="px-4 py-2.5">
+                        {pillar?.stem ? (
+                          <>
+                            <span className="text-lg font-bold text-slate-950">
+                              {pillar.stem.zh}
+                            </span>{" "}
+                            <span className="text-stone-500">
+                              {pillar.stem.name} {pillar.stem.element}
+                            </span>
+                            {tenGod && (
+                              <p className="mt-1 text-xs font-semibold uppercase tracking-[0.1em] text-amber-700">
+                                {tenGod}
+                              </p>
+                            )}
+                          </>
+                        ) : (
+                          <span className="text-stone-400">—</span>
+                        )}
+                      </td>
+                    );
+                  })}
+                </tr>
+
+                <tr className="border-t border-slate-100">
+                  <td className="px-4 py-2.5 font-semibold text-slate-700">
+                    Earthly Branch
+                  </td>
+                  {["hour", "day", "month", "year"].map((key) => {
+                    const pillar = natalPillars[key];
+                    return (
+                      <td key={key} className="px-4 py-2.5">
+                        {pillar?.branch ? (
+                          <>
+                            <span className="text-lg font-bold text-slate-950">
+                              {pillar.branch.zh}
+                            </span>{" "}
+                            <span className="text-stone-500">
+                              {pillar.branch.animal} {pillar.branch.element}
+                            </span>
+                          </>
+                        ) : (
+                          <span className="text-stone-400">—</span>
+                        )}
+                      </td>
+                    );
+                  })}
+                </tr>
+
+                <tr className="border-t border-slate-100 align-top">
+                  <td className="px-4 py-2.5 font-semibold text-slate-700">
+                    Hidden Stems
+                  </td>
+                  {["hour", "day", "month", "year"].map((key) => {
+                    const pillar = natalPillars[key];
+                    const hiddenTenGods = tenGodByPillar?.[key]?.hiddenStems || [];
+                    return (
+                      <td key={key} className="px-4 py-2.5">
+                        {pillar?.branch?.hiddenStems?.length ? (
+                          <div className="space-y-1">
+                            {pillar.branch.hiddenStems.map((hidden, i) => (
+                              <p key={hidden.key}>
+                                <span className="font-semibold text-slate-800">
+                                  {hidden.zh}
+                                </span>{" "}
+                                <span className="text-xs text-stone-500">
+                                  {hiddenTenGods[i]?.tenGod || ""}
+                                </span>
+                              </p>
+                            ))}
+                          </div>
+                        ) : (
+                          <span className="text-stone-400">—</span>
+                        )}
+                      </td>
+                    );
+                  })}
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
 
       {!!elementalBalance.length && (
         <div className="mt-8">

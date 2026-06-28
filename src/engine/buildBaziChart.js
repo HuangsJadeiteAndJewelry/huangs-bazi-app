@@ -672,6 +672,10 @@ export function buildBaziChart(input) {
 
       pillars,
       birthZodiac,
+      tenGods: {
+        byPillar: tenGodByPillar,
+        scores: tenGodScores,
+      },
 
       elementBalance,
       elementBalanceV3,
