@@ -21,8 +21,14 @@ export function buildLifePalaceV1({ pillars }) {
   const monthScheme = toLifePalaceScheme(getBranchIndex(pillars.month.branch.key));
   const hourScheme = toLifePalaceScheme(getBranchIndex(pillars.hour.branch.key));
 
+  // Verified against 3 real Joey Yap reference charts (Joshua, Suyin C,
+  // Yue Qing Amanda - exact match on both stem and branch): the correct
+  // threshold/base pair is 13/25, not the originally-sourced 14/26. The
+  // two independent written sources cited when this was first built used
+  // a self-consistent worked example, but it doesn't reproduce real
+  // reference output - this off-by-one is the actual rule.
   const sum = monthScheme + hourScheme;
-  const base = sum < 14 ? 14 : 26;
+  const base = sum < 13 ? 13 : 25;
   const resultScheme = base - sum;
 
   const branchIndex = fromLifePalaceScheme(resultScheme);

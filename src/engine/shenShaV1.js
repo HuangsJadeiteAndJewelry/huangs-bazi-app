@@ -124,18 +124,24 @@ export function buildShenShaV1({ pillars }) {
   if (!pillars?.year || !pillars?.day) return null;
 
   const yearBranchKey = pillars.year.branch.key;
+  const dayBranchKey = pillars.day.branch.key;
   const dayStemKey = pillars.day.stem.key;
   const monthBranchKey = pillars.month?.branch?.key || null;
 
   const yearTrioGroup = findTrioGroup(yearBranchKey);
-  const yearSeasonGroup = findSeasonTrioGroup(yearBranchKey);
+  // Solitary/Widow are keyed by DAY branch, not year branch - verified
+  // against 3 real Joey Yap reference charts (Ma Weini, Suyin C, Wong Lee
+  // Lee, all exact matches). Originally implemented as year-branch-keyed
+  // based on the source's grouping label; the grouping table itself was
+  // right, just anchored to the wrong pillar.
+  const daySeasonGroup = findSeasonTrioGroup(dayBranchKey);
   const monthTrioGroup = monthBranchKey ? findTrioGroup(monthBranchKey) : null;
 
   const peachBlossomBranchKey = yearTrioGroup?.peachBlossom || null;
   const skyHorseBranchKey = yearTrioGroup?.skyHorse || null;
   const robberyShaBranchKey = yearTrioGroup?.robberySha || null;
-  const solitaryBranchKey = yearSeasonGroup?.solitary || null;
-  const widowBranchKey = yearSeasonGroup?.widow || null;
+  const solitaryBranchKey = daySeasonGroup?.solitary || null;
+  const widowBranchKey = daySeasonGroup?.widow || null;
   const nobleBranchKeys = NOBLE_PEOPLE_BY_DAY_STEM[dayStemKey] || [];
   const intelligenceBranchKey = INTELLIGENCE_STAR_BY_DAY_STEM[dayStemKey] || null;
   const fiveGhostsBranchKey = FIVE_GHOSTS_BY_YEAR_BRANCH[yearBranchKey] || null;
