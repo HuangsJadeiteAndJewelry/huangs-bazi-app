@@ -20,16 +20,40 @@
 // least 12 months after release.
 const SHOPIFY_API_VERSION = "2025-10";
 
+async function getShopifyAccessToken(shopDomain, clientId, clientSecret) {
+  const response = await fetch(
+    `https://${shopDomain}/admin/oauth/access_token`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        grant_type: "client_credentials",
+        client_id: clientId,
+        client_secret: clientSecret,
+      }),
+    }
+  );
+  if (!response.ok) {
+    const body = await response.text();
+    throw new Error(`Shopify token exchange failed: ${response.status} ${body}`);
+  }
+  const data = await response.json();
+  return data.access_token;
+}
+
 async function upsertShopifyCustomer(email) {
   const shopDomain = process.env.SHOPIFY_SHOP_DOMAIN;
-  const accessToken = process.env.SHOPIFY_ADMIN_API_TOKEN;
+  const clientId = process.env.SHOPIFY_CLIENT_ID;
+  const clientSecret = process.env.SHOPIFY_CLIENT_SECRET;
 
-  if (!shopDomain || !accessToken) {
+  if (!shopDomain || !clientId || !clientSecret) {
     console.warn(
-      "SHOPIFY_CUSTOMER_SYNC_SKIPPED: missing SHOPIFY_SHOP_DOMAIN or SHOPIFY_ADMIN_API_TOKEN"
+      "SHOPIFY_CUSTOMER_SYNC_SKIPPED: missing SHOPIFY_SHOP_DOMAIN, SHOPIFY_CLIENT_ID, or SHOPIFY_CLIENT_SECRET"
     );
     return { ok: false, skipped: true };
   }
+
+  const accessToken = await getShopifyAccessToken(shopDomain, clientId, clientSecret);
 
   const baseUrl = `https://${shopDomain}/admin/api/${SHOPIFY_API_VERSION}`;
   const headers = {
